@@ -1,3 +1,5 @@
+// Package udp implements UDP test helpers. It lets you assert that certain
+// strings must or must not be sent to a given local UDP listener.
 package udp
 
 import (
