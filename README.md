@@ -21,6 +21,8 @@ Example
     func TestUdp(t *testing.T) {
       # ...
 
+      udp.SetAddr(":8125")
+
       udp.ShouldReceive(t, "mystat:2|g", func() {
         statsd.Gauge("mystat", 2)
       })
