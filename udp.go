@@ -59,7 +59,7 @@ func get(t *testing.T, match string, body fn) (got string, equals bool, contains
 	return got, equals, contains
 }
 
-// ShouldReceive will fire a test error if the given function doesn't send
+// ShouldReceiveOnly will fire a test error if the given function doesn't send
 // exactly the given string over UDP.
 func ShouldReceiveOnly(t *testing.T, expected string, body fn) {
 	got, equals, _ := get(t, expected, body)
@@ -68,8 +68,8 @@ func ShouldReceiveOnly(t *testing.T, expected string, body fn) {
 	}
 }
 
-// ShouldNotReceive will fire a test error if the given function sends exactly
-// the given string over UDP.
+// ShouldNotReceiveOnly will fire a test error if the given function sends
+// exactly the given string over UDP.
 func ShouldNotReceiveOnly(t *testing.T, notExpected string, body fn) {
 	_, equals, _ := get(t, notExpected, body)
 	if equals {
@@ -77,8 +77,8 @@ func ShouldNotReceiveOnly(t *testing.T, notExpected string, body fn) {
 	}
 }
 
-// ShouldContain will fire a test error if the given function doesn't send
-// the given string over UDP.
+// ShouldReceive will fire a test error if the given function doesn't send the
+// given string over UDP.
 func ShouldReceive(t *testing.T, expected string, body fn) {
 	got, _, contains := get(t, expected, body)
 	if !contains {
@@ -86,7 +86,7 @@ func ShouldReceive(t *testing.T, expected string, body fn) {
 	}
 }
 
-// ShouldNotContain will fire a test error if the given function sends the
+// ShouldNotReceive will fire a test error if the given function sends the
 // given string over UDP.
 func ShouldNotReceive(t *testing.T, expected string, body fn) {
 	got, _, contains := get(t, expected, body)

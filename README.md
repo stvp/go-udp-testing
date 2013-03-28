@@ -18,7 +18,7 @@ Example
       # ...
     )
 
-    func TestUdp(t *testing.T) {
+    func TestStatsdReporting(t *testing.T) {
       # ...
 
       udp.SetAddr(":8125")
