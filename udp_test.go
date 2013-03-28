@@ -45,19 +45,19 @@ func TestAll(t *testing.T) {
 		}
 	}
 
+	ShouldReceiveOnly(t, "foo", func() {
+		udpClient.Write([]byte("foo"))
+	})
+
+	ShouldNotReceiveOnly(t, "bar", func() {
+		udpClient.Write([]byte("foo"))
+	})
+
 	ShouldReceive(t, "foo", func() {
-		udpClient.Write([]byte("foo"))
-	})
-
-	ShouldNotReceive(t, "bar", func() {
-		udpClient.Write([]byte("foo"))
-	})
-
-	ShouldContain(t, "foo", func() {
 		udpClient.Write([]byte("barfoo"))
 	})
 
-	ShouldNotContain(t, "bar", func() {
+	ShouldNotReceive(t, "bar", func() {
 		udpClient.Write([]byte("fooba"))
 	})
 }

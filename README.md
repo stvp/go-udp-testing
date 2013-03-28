@@ -23,21 +23,21 @@ Example
 
       udp.SetAddr(":8125")
 
-      udp.ShouldReceive(t, "mystat:2|g", func() {
+      udp.ShouldReceiveOnly(t, "mystat:2|g", func() {
         statsd.Gauge("mystat", 2)
       })
 
-      udp.ShouldNotReceive(t, "mystat:1|c", func() {
+      udp.ShouldNotReceiveOnly(t, "mystat:1|c", func() {
         statsd.Gauge("bukkit", 2)
       })
 
-      udp.ShouldContain(t, "bar:2|g", func() {
+      udp.ShouldReceive(t, "bar:2|g", func() {
         statsd.Gauge("foo", 2)
         statsd.Gauge("bar", 2)
         statsd.Gauge("baz", 2)
       })
 
-      udp.ShouldNotContain(t, "bar:2|g", func() {
+      udp.ShouldNotReceive(t, "bar:2|g", func() {
         statsd.Gauge("foo", 2)
         statsd.Gauge("baz", 2)
       })
