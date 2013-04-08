@@ -40,20 +40,20 @@ func TestStatsdReporting(t *testing.T) {
     statsd.Gauge("baz", 2)
   })
 
-  expectedLines := []string{
+  expected := []string{
     "bar:2|g",
     "baz:5|g",
   }
-  udp.ShouldReceiveAll(t, expectedLines, func() {
+  udp.ShouldReceiveAll(t, expected, func() {
     statsd.Gauge("foo", 2)
     statsd.Gauge("baz", 2)
   })
 
-  unexpectedLines := []string{
+  unexpected := []string{
     "bar",
     "baz",
   }
-  udp.ShouldNotReceiveAny(t, unexpectedLines, func() {
+  udp.ShouldNotReceiveAny(t, unexpected, func() {
     statsd.Gauge("foo", 1)
   })
 }
