@@ -96,3 +96,25 @@ func ShouldNotReceive(t *testing.T, expected string, body fn) {
 		t.Errorf("Expected not to find %#v but got %#v", expected, got)
 	}
 }
+
+// ShouldReceiveAll will fire a test error unless all of the given strings are
+// sent over UDP.
+func ShouldReceiveAll(t *testing.T, expected []string, body fn) {
+	got := getMessage(t, body)
+	for _, str := range expected {
+		if !strings.Contains(got, str) {
+			t.Errorf("Expected to find %#v but got %#v instead", str, got)
+		}
+	}
+}
+
+// ShouldNotReceiveAny will fire a test error if any of the given strings are
+// sent over UDP.
+func ShouldNotReceiveAny(t *testing.T, expected []string, body fn) {
+	got := getMessage(t, body)
+	for _, str := range expected {
+		if strings.Contains(got, str) {
+			t.Errorf("Expected not to find %#v but got %#v", str, got)
+		}
+	}
+}

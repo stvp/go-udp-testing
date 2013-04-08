@@ -7,39 +7,55 @@ Provides UDP socket test helpers for Go.
 
 [Documentation](http://godoc.org/github.com/stvp/go-udp-testing)
 
-Example
--------
+Examples
+--------
 
-    package main
+```go
+package main
 
-    import (
-      "github.com/stvp/go-udp-testing"
-      "testing"
-      # ...
-    )
+import (
+  "github.com/stvp/go-udp-testing"
+  "testing"
+)
 
-    func TestStatsdReporting(t *testing.T) {
-      # ...
+func TestStatsdReporting(t *testing.T) {
+  udp.SetAddr(":8125")
 
-      udp.SetAddr(":8125")
+  udp.ShouldReceiveOnly(t, "mystat:2|g", func() {
+    statsd.Gauge("mystat", 2)
+  })
 
-      udp.ShouldReceiveOnly(t, "mystat:2|g", func() {
-        statsd.Gauge("mystat", 2)
-      })
+  udp.ShouldNotReceiveOnly(t, "mystat:1|c", func() {
+    statsd.Gauge("bukkit", 2)
+  })
 
-      udp.ShouldNotReceiveOnly(t, "mystat:1|c", func() {
-        statsd.Gauge("bukkit", 2)
-      })
+  udp.ShouldReceive(t, "bar:2|g", func() {
+    statsd.Gauge("foo", 2)
+    statsd.Gauge("bar", 2)
+    statsd.Gauge("baz", 2)
+  })
 
-      udp.ShouldReceive(t, "bar:2|g", func() {
-        statsd.Gauge("foo", 2)
-        statsd.Gauge("bar", 2)
-        statsd.Gauge("baz", 2)
-      })
+  udp.ShouldNotReceive(t, "bar:2|g", func() {
+    statsd.Gauge("foo", 2)
+    statsd.Gauge("baz", 2)
+  })
 
-      udp.ShouldNotReceive(t, "bar:2|g", func() {
-        statsd.Gauge("foo", 2)
-        statsd.Gauge("baz", 2)
-      })
-    }
+  expectedLines := []string{
+    "bar:2|g",
+    "baz:5|g",
+  }
+  udp.ShouldReceiveAll(t, expectedLines, func() {
+    statsd.Gauge("foo", 2)
+    statsd.Gauge("baz", 2)
+  })
+
+  unexpectedLines := []string{
+    "bar",
+    "baz",
+  }
+  udp.ShouldNotReceiveAny(t, unexpectedLines, func() {
+    statsd.Gauge("foo", 1)
+  })
+}
+```
 
