@@ -44,7 +44,7 @@ func getMessage(t *testing.T, body fn) string {
 	result := make(chan string)
 
 	go func() {
-		message := make([]byte, 1024)
+		message := make([]byte, 1024*32)
 		n, _, _ := listener.ReadFrom(message)
 		result <- string(message[0:n])
 	}()
