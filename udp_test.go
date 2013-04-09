@@ -68,4 +68,8 @@ func TestAll(t *testing.T) {
 	ShouldNotReceiveAny(t, []string{"fooby", "bars"}, func() {
 		udpClient.Write([]byte("foobizbar"))
 	})
+
+	ShouldReceiveAllAndNotReceiveAny(t, []string{"foo", "bar"}, []string{"fooby", "bars"}, func() {
+		udpClient.Write([]byte("foobizbar"))
+	})
 }

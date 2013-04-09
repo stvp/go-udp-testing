@@ -45,7 +45,7 @@ func TestStatsdReporting(t *testing.T) {
     "baz:5|g",
   }
   udp.ShouldReceiveAll(t, expected, func() {
-    statsd.Gauge("foo", 2)
+    statsd.Gauge("bar", 2)
     statsd.Gauge("baz", 2)
   })
 
@@ -55,6 +55,18 @@ func TestStatsdReporting(t *testing.T) {
   }
   udp.ShouldNotReceiveAny(t, unexpected, func() {
     statsd.Gauge("foo", 1)
+  })
+
+  expected := []string{ "" }
+    "bar:2|g",
+    "baz:5|g",
+  }
+  unexpected := []string{
+    "foo",
+  }
+  udp.ShouldReceiveAllAndNotReceiveAny(t, expected, unexpected, func() {
+    statsd.Gauge("bar", 2)
+    statsd.Gauge("baz", 5)
   })
 }
 ```
