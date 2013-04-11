@@ -22,6 +22,7 @@ func TestAll(t *testing.T) {
 		[]interface{}{"foo", "foo", true, true},
 		[]interface{}{"foo", "bar", false, false},
 		[]interface{}{"foo", "foobar", false, true},
+		[]interface{}{"", "", true, true},
 	}
 
 	for _, values := range testValues {
