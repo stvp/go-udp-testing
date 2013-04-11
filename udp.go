@@ -6,11 +6,13 @@ import (
 	"net"
 	"strings"
 	"testing"
+	"time"
 )
 
 var (
 	addr     *string
 	listener *net.UDPConn
+	Timeout  time.Duration = time.Millisecond
 )
 
 type fn func()
@@ -45,6 +47,7 @@ func getMessage(t *testing.T, body fn) string {
 
 	go func() {
 		message := make([]byte, 1024*32)
+		listener.SetReadDeadline(time.Now().Add(Timeout))
 		n, _, _ := listener.ReadFrom(message)
 		result <- string(message[0:n])
 	}()
