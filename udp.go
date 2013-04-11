@@ -4,6 +4,7 @@ package udp
 
 import (
 	"net"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -64,12 +65,19 @@ func get(t *testing.T, match string, body fn) (got string, equals bool, contains
 	return got, equals, contains
 }
 
+func printLocation(t *testing.T) {
+	_, file, line, _ := runtime.Caller(2)
+	t.Errorf("At: %s:%d", file, line)
+}
+
 // ShouldReceiveOnly will fire a test error if the given function doesn't send
 // exactly the given string over UDP.
 func ShouldReceiveOnly(t *testing.T, expected string, body fn) {
 	got, equals, _ := get(t, expected, body)
 	if !equals {
-		t.Errorf("Expected %#v but got %#v instead", expected, got)
+		printLocation(t)
+		t.Errorf("Expected: %s", expected)
+		t.Errorf("But got: %s", got)
 	}
 }
 
@@ -78,7 +86,8 @@ func ShouldReceiveOnly(t *testing.T, expected string, body fn) {
 func ShouldNotReceiveOnly(t *testing.T, notExpected string, body fn) {
 	_, equals, _ := get(t, notExpected, body)
 	if equals {
-		t.Errorf("Expected not to get %v but did", notExpected)
+		printLocation(t)
+		t.Errorf("Expected not to get: %s", notExpected)
 	}
 }
 
@@ -87,7 +96,9 @@ func ShouldNotReceiveOnly(t *testing.T, notExpected string, body fn) {
 func ShouldReceive(t *testing.T, expected string, body fn) {
 	got, _, contains := get(t, expected, body)
 	if !contains {
-		t.Errorf("Expected to find %#v but got %#v instead", expected, got)
+		printLocation(t)
+		t.Errorf("Expected to find: %s", expected)
+		t.Errorf("But got: %s", got)
 	}
 }
 
@@ -96,7 +107,9 @@ func ShouldReceive(t *testing.T, expected string, body fn) {
 func ShouldNotReceive(t *testing.T, expected string, body fn) {
 	got, _, contains := get(t, expected, body)
 	if contains {
-		t.Errorf("Expected not to find %#v but got %#v", expected, got)
+		printLocation(t)
+		t.Errorf("Expected not to find: %s", expected)
+		t.Errorf("But got: %s", got)
 	}
 }
 
@@ -104,10 +117,20 @@ func ShouldNotReceive(t *testing.T, expected string, body fn) {
 // sent over UDP.
 func ShouldReceiveAll(t *testing.T, expected []string, body fn) {
 	got := getMessage(t, body)
+	failed := false
+
 	for _, str := range expected {
 		if !strings.Contains(got, str) {
-			t.Errorf("Expected to find %#v but got %#v instead", str, got)
+			if !failed {
+				printLocation(t)
+				failed = true
+			}
+			t.Errorf("Expected to find: %s", str)
 		}
+	}
+
+	if failed {
+		t.Errorf("But got: %s", got)
 	}
 }
 
@@ -115,23 +138,47 @@ func ShouldReceiveAll(t *testing.T, expected []string, body fn) {
 // sent over UDP.
 func ShouldNotReceiveAny(t *testing.T, unexpected []string, body fn) {
 	got := getMessage(t, body)
+	failed := false
+
 	for _, str := range unexpected {
 		if strings.Contains(got, str) {
-			t.Errorf("Expected not to find %#v but got %#v", str, got)
+			if !failed {
+				printLocation(t)
+				failed = true
+			}
+			t.Errorf("Expected not to find: %s", str)
 		}
+	}
+
+	if failed {
+		t.Errorf("But got: %s", got)
 	}
 }
 
 func ShouldReceiveAllAndNotReceiveAny(t *testing.T, expected []string, unexpected []string, body fn) {
 	got := getMessage(t, body)
+	failed := false
+
 	for _, str := range expected {
 		if !strings.Contains(got, str) {
-			t.Errorf("Expected to find %#v but got %#v instead", str, got)
+			if !failed {
+				printLocation(t)
+				failed = true
+			}
+			t.Errorf("Expected to find: %s", str)
 		}
 	}
 	for _, str := range unexpected {
 		if strings.Contains(got, str) {
-			t.Errorf("Expected not to find %#v but got %#v", str, got)
+			if !failed {
+				printLocation(t)
+				failed = true
+			}
+			t.Errorf("Expected not to find: %s", str)
 		}
+	}
+
+	if failed {
+		t.Errorf("but got: %s", got)
 	}
 }
