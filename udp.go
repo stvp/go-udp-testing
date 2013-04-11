@@ -6,7 +6,6 @@ import (
 	"net"
 	"strings"
 	"testing"
-	"time"
 )
 
 var (
@@ -52,13 +51,7 @@ func getMessage(t *testing.T, body fn) string {
 
 	body()
 
-	select {
-	case text := <-result:
-		return text
-	case <-time.After(time.Millisecond):
-	}
-
-	return ""
+	return <-result
 }
 
 func get(t *testing.T, match string, body fn) (got string, equals bool, contains bool) {
