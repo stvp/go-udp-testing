@@ -76,8 +76,8 @@ func ShouldReceiveOnly(t *testing.T, expected string, body fn) {
 	got, equals, _ := get(t, expected, body)
 	if !equals {
 		printLocation(t)
-		t.Errorf("Expected: %s", expected)
-		t.Errorf("But got: %s", got)
+		t.Errorf("Expected: %#v", expected)
+		t.Errorf("But got: %#v", got)
 	}
 }
 
@@ -87,7 +87,7 @@ func ShouldNotReceiveOnly(t *testing.T, notExpected string, body fn) {
 	_, equals, _ := get(t, notExpected, body)
 	if equals {
 		printLocation(t)
-		t.Errorf("Expected not to get: %s", notExpected)
+		t.Errorf("Expected not to get: %#v", notExpected)
 	}
 }
 
@@ -97,8 +97,8 @@ func ShouldReceive(t *testing.T, expected string, body fn) {
 	got, _, contains := get(t, expected, body)
 	if !contains {
 		printLocation(t)
-		t.Errorf("Expected to find: %s", expected)
-		t.Errorf("But got: %s", got)
+		t.Errorf("Expected to find: %#v", expected)
+		t.Errorf("But got: %#v", got)
 	}
 }
 
@@ -108,8 +108,8 @@ func ShouldNotReceive(t *testing.T, expected string, body fn) {
 	got, _, contains := get(t, expected, body)
 	if contains {
 		printLocation(t)
-		t.Errorf("Expected not to find: %s", expected)
-		t.Errorf("But got: %s", got)
+		t.Errorf("Expected not to find: %#v", expected)
+		t.Errorf("But got: %#v", got)
 	}
 }
 
@@ -125,12 +125,12 @@ func ShouldReceiveAll(t *testing.T, expected []string, body fn) {
 				printLocation(t)
 				failed = true
 			}
-			t.Errorf("Expected to find: %s", str)
+			t.Errorf("Expected to find: %#v", str)
 		}
 	}
 
 	if failed {
-		t.Errorf("But got: %s", got)
+		t.Errorf("But got: %#v", got)
 	}
 }
 
@@ -146,12 +146,12 @@ func ShouldNotReceiveAny(t *testing.T, unexpected []string, body fn) {
 				printLocation(t)
 				failed = true
 			}
-			t.Errorf("Expected not to find: %s", str)
+			t.Errorf("Expected not to find: %#v", str)
 		}
 	}
 
 	if failed {
-		t.Errorf("But got: %s", got)
+		t.Errorf("But got: %#v", got)
 	}
 }
 
@@ -165,7 +165,7 @@ func ShouldReceiveAllAndNotReceiveAny(t *testing.T, expected []string, unexpecte
 				printLocation(t)
 				failed = true
 			}
-			t.Errorf("Expected to find: %s", str)
+			t.Errorf("Expected to find: %#v", str)
 		}
 	}
 	for _, str := range unexpected {
@@ -174,11 +174,11 @@ func ShouldReceiveAllAndNotReceiveAny(t *testing.T, expected []string, unexpecte
 				printLocation(t)
 				failed = true
 			}
-			t.Errorf("Expected not to find: %s", str)
+			t.Errorf("Expected not to find: %#v", str)
 		}
 	}
 
 	if failed {
-		t.Errorf("but got: %s", got)
+		t.Errorf("but got: %#v", got)
 	}
 }

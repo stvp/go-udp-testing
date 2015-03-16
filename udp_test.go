@@ -37,13 +37,13 @@ func TestAll(t *testing.T) {
 		})
 
 		if got != sendString {
-			t.Errorf("Should've got %s but got %s", sendString, got)
+			t.Errorf("Should've got %#v but got %#v", sendString, got)
 		}
 		if equals != shouldEquals {
-			t.Errorf("Equals should've been %s but was %s", shouldEquals, equals)
+			t.Errorf("Equals should've been %#v but was %#v", shouldEquals, equals)
 		}
 		if contains != shouldContains {
-			t.Errorf("Contains should've been %s but was %s", shouldContains, contains)
+			t.Errorf("Contains should've been %#v but was %#v", shouldContains, contains)
 		}
 	}
 
