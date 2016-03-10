@@ -72,7 +72,9 @@ func TestAll(t *testing.T) {
 	})
 
 	ShouldReceiveAllAndNotReceiveAny(t, []string{"foo", "bar"}, []string{"fooby", "bars"}, func() {
-		udpClient.Write([]byte("foobizbar"))
+		udpClient.Write([]byte("foo"))
+		udpClient.Write([]byte("biz"))
+		udpClient.Write([]byte("bar"))
 	})
 
 	// This should fail, but it also shouldn't stall out

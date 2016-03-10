@@ -48,9 +48,17 @@ func getMessage(t *testing.T, body fn) string {
 
 	go func() {
 		message := make([]byte, 1024*32)
-		listener.SetReadDeadline(time.Now().Add(Timeout))
-		n, _, _ := listener.ReadFrom(message)
-		result <- string(message[0:n])
+		var bufLen int
+		for {
+			listener.SetReadDeadline(time.Now().Add(Timeout))
+			n, _, _ := listener.ReadFrom(message[bufLen:])
+			if n == 0 {
+				result <- string(message[0:bufLen])
+				break
+			} else {
+				bufLen += n
+			}
+		}
 	}()
 
 	body()
