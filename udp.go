@@ -190,3 +190,7 @@ func ShouldReceiveAllAndNotReceiveAny(t *testing.T, expected []string, unexpecte
 		t.Errorf("but got: %#v", got)
 	}
 }
+
+func ReceiveString(t *testing.T, body fn) string {
+	return getMessage(t, body)
+}
