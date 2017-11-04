@@ -10,13 +10,19 @@ var (
 	testAddr = ":8126"
 )
 
-func TestAll(t *testing.T) {
+func setup(t *testing.T) net.Conn {
 	udpClient, err := net.DialTimeout("udp", testAddr, time.Second)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	SetAddr(testAddr)
+
+	return udpClient
+}
+
+func TestAll(t *testing.T) {
+	udpClient := setup(t)
 
 	testValues := [][]interface{}{
 		[]interface{}{"foo", "foo", true, true},
@@ -79,4 +85,17 @@ func TestAll(t *testing.T) {
 
 	// This should fail, but it also shouldn't stall out
 	// ShouldReceive(t, "foo", func() {})
+}
+
+func TestRaceConditionInReadingResults(t *testing.T) {
+	udpClient := setup(t)
+
+	ShouldReceiveAllAndNotReceiveAny(t, []string{"foo", "bar", "biz"}, []string{"fooby", "bars"}, func() {
+		time.Sleep(time.Millisecond * 100)
+		udpClient.Write([]byte("foo"))
+		time.Sleep(time.Millisecond * 200)
+		udpClient.Write([]byte("biz"))
+		time.Sleep(time.Millisecond * 500)
+		udpClient.Write([]byte("bar"))
+	})
 }
