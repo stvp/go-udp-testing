@@ -13,7 +13,7 @@ import (
 var (
 	addr     *string
 	listener *net.UDPConn
-	Timeout  = time.Millisecond
+	Timeout  time.Duration = time.Millisecond
 )
 
 type fn func()
@@ -23,12 +23,8 @@ func SetAddr(a string) {
 	addr = &a
 }
 
-func LocalAddr() net.Addr {
-	return listener.LocalAddr()
-}
-
 func RemoteAddr() net.Addr {
-	return listener.RemoteAddr()
+	return listener.LocalAddr()
 }
 
 func Write(b []byte) (n int, err error) {
@@ -40,11 +36,14 @@ func WriteTo(b []byte, addr net.Addr) (n int, err error) {
 }
 
 func start(t *testing.T) {
-	conn, err := net.Dial("udp", *addr)
+	resAddr, err := net.ResolveUDPAddr("udp", *addr)
 	if err != nil {
 		t.Fatal(err)
 	}
-	listener = conn.(*net.UDPConn)
+	listener, err = net.ListenUDP("udp", resAddr)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func stop(t *testing.T) {
