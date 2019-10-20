@@ -13,7 +13,7 @@ import (
 var (
 	addr     *string
 	listener *net.UDPConn
-	Timeout  time.Duration = time.Millisecond
+	Timeout  = time.Millisecond
 )
 
 type fn func()
