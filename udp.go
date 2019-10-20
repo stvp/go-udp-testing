@@ -23,6 +23,22 @@ func SetAddr(a string) {
 	addr = &a
 }
 
+func LocalAddr() net.Addr {
+	return listener.LocalAddr()
+}
+
+func RemoteAddr() net.Addr {
+	return listener.RemoteAddr()
+}
+
+func Write(b []byte) (n int, err error) {
+	return listener.Write(b)
+}
+
+func WriteTo(b []byte, addr net.Addr) (n int, err error) {
+	return listener.WriteTo(b, addr)
+}
+
 func start(t *testing.T) {
 	resAddr, err := net.ResolveUDPAddr("udp", *addr)
 	if err != nil {
@@ -71,10 +87,6 @@ func get(t *testing.T, match string, body fn) (got string, equals bool, contains
 func printLocation(t *testing.T) {
 	_, file, line, _ := runtime.Caller(2)
 	t.Errorf("At: %s:%d", file, line)
-}
-
-func Write(b []byte) (n int, err error) {
-	return listener.Write(b)
 }
 
 // ShouldReceiveOnly will fire a test error if the given function doesn't send
