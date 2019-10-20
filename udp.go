@@ -73,6 +73,10 @@ func printLocation(t *testing.T) {
 	t.Errorf("At: %s:%d", file, line)
 }
 
+func Write(b []byte) (n int, err error) {
+	return listener.Write(b)
+}
+
 // ShouldReceiveOnly will fire a test error if the given function doesn't send
 // exactly the given string over UDP.
 func ShouldReceiveOnly(t *testing.T, expected string, body fn) {
