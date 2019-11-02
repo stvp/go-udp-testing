@@ -13,7 +13,7 @@ import (
 var (
 	addr     *string
 	listener *net.UDPConn
-	Timeout  time.Duration = time.Millisecond
+	Timeout  = time.Millisecond
 )
 
 type fn func()
@@ -21,6 +21,18 @@ type fn func()
 // SetAddr sets the UDP port that will be listened on.
 func SetAddr(a string) {
 	addr = &a
+}
+
+func RemoteAddr() net.Addr {
+	return listener.LocalAddr()
+}
+
+func Write(b []byte) (n int, err error) {
+	return listener.Write(b)
+}
+
+func WriteTo(b []byte, addr net.Addr) (n int, err error) {
+	return listener.WriteTo(b, addr)
 }
 
 func start(t *testing.T) {
@@ -49,7 +61,7 @@ func getMessage(t *testing.T, body fn) string {
 	message := make([]byte, 1024*32)
 	var bufLen int
 	for {
-		listener.SetReadDeadline(time.Now().Add(Timeout))
+		_ = listener.SetReadDeadline(time.Now().Add(Timeout))
 		n, _, _ := listener.ReadFrom(message[bufLen:])
 		if n == 0 {
 			break

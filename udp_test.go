@@ -25,11 +25,11 @@ func TestAll(t *testing.T) {
 	udpClient := setup(t)
 
 	testValues := [][]interface{}{
-		[]interface{}{"foo", "foo", true, true},
-		[]interface{}{"foo", "bar", false, false},
-		[]interface{}{"foo", "foobar", false, true},
-		[]interface{}{"foo", "", false, false},
-		[]interface{}{"", "", true, true},
+		{"foo", "foo", true, true},
+		{"foo", "bar", false, false},
+		{"foo", "foobar", false, true},
+		{"foo", "", false, false},
+		{"", "", true, true},
 	}
 
 	for _, values := range testValues {
